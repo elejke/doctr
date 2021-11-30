@@ -346,7 +346,7 @@ class Page(Element):
                     word_div.text = word.value
                     word_count += 1
 
-        return (ET.tostring(page_hocr, encoding='utf-8', method='xml'), ET.ElementTree(page_hocr))
+        return ET.tostring(page_hocr, encoding='utf-8', method='xml'), ET.ElementTree(page_hocr)
 
     @classmethod
     def from_dict(cls, save_dict: Dict[str, Any], **kwargs):

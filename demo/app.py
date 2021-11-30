@@ -101,7 +101,7 @@ def main():
 
                 # Page reconsitution under input page
                 page_export = out.pages[0].export()
-                img = out.pages[0].synthesize_on_image(doc[page_idx].astype(np.uint8))
+                img = out.pages[0].synthesize_on_image(image=doc[page_idx].astype(np.uint8))
                 # pil_mask = Image.fromarray(img.astype(np.uint8))
                 # pil_img = Image.fromarray(doc[page_idx].astype(np.uint8))
                 

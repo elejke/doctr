@@ -340,9 +340,11 @@ def synthesize_page_on_image(
 
     # Draw template
     h, w = page["dimensions"]
-    if h != image.size[0] or w != image.size[1]:
-        raise ValueError('Image should be the same size as in the page["dimensions"]')
+    # if h != image.size[0] or w != image.size[1]:
+    #     raise ValueError('Image should be the same size as in the page["dimensions"]')
     response = image[:, :, :3].astype(np.int32)  # 255 * np.ones((h, w, 3), dtype=np.int32)
+    # 4-channel image for crops of boxes for color picker:
+    image = np.concatenate([response, np.ones_like(image[:, :, :1]) * 255], axis=2).astype(np.uint8)
 
     # Draw each word
     for block in page["blocks"]:
@@ -356,7 +358,7 @@ def synthesize_page_on_image(
                 # White drawing context adapted to font size, 0.75 factor to convert pts --> pix
                 font = get_font(font_family, int(0.95 * (ymax - ymin)))  # FIXED FROM 0.75
 
-                bg_color, text_color = extract_colors(image, xmin, xmax, ymin, ymax)
+                bg_color, text_color = extract_colors(image, ymin, ymax, xmin, xmax)
 
                 img = Image.new('RGB', (xmax - xmin, ymax - ymin), color=bg_color)  # (255, 255, 255))
                 d = ImageDraw.Draw(img)
