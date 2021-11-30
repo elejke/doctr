@@ -19,7 +19,7 @@ import doctr
 from doctr.utils.common_types import BoundingBox, RotatedBbox
 from doctr.utils.geometry import resolve_enclosing_bbox, resolve_enclosing_rbbox
 from doctr.utils.repr import NestedObject
-from doctr.utils.visualization import synthesize_page, visualize_page
+from doctr.utils.visualization import synthesize_page, visualize_page, synthesize_page_on_image
 
 __all__ = ['Element', 'Word', 'Artefact', 'Line', 'Block', 'Page', 'Document']
 
@@ -261,6 +261,15 @@ class Page(Element):
         """
 
         return synthesize_page(self.export(), **kwargs)
+
+    def synthesize_on_image(self, **kwargs) -> np.ndarray:
+        """Synthesize the page from the predictions
+
+        Returns:
+            synthesized page
+        """
+
+        return synthesize_page_on_image(self.export(), **kwargs)
 
     def export_as_xml(self, file_title: str = 'docTR - XML export (hOCR)') -> Tuple[bytes, ET.ElementTree]:
         """Export the page as XML (hOCR-format)

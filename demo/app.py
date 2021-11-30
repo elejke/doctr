@@ -4,14 +4,18 @@
 # See LICENSE or go to <https://www.apache.org/licenses/LICENSE-2.0.txt> for full license details.
 
 import os
+import numpy as np
 
 import matplotlib.pyplot as plt
 import streamlit as st
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 import cv2
 import tensorflow as tf
+
+from PIL import Image
 
 gpu_devices = tf.config.experimental.list_physical_devices('GPU')
 if any(gpu_devices):
@@ -31,7 +35,7 @@ def main():
     st.set_page_config(layout="wide")
 
     # Designing the interface
-    st.title("docTR: Document Text Recognition")
+    st.title("Scene Text Recognition and Translation Demo")
     # For newline
     st.write('\n')
     # Instructions
@@ -97,7 +101,14 @@ def main():
 
                 # Page reconsitution under input page
                 page_export = out.pages[0].export()
-                img = out.pages[0].synthesize()
+                img = out.pages[0].synthesize_on_image(doc[page_idx].astype(np.uint8))
+                # pil_mask = Image.fromarray(img.astype(np.uint8))
+                # pil_img = Image.fromarray(doc[page_idx].astype(np.uint8))
+                
+                # kernel = np.ones((5, 5), np.uint8)
+                # seg_map = cv2.dilate((seg_map > 0.5).astype(np.uint8), kernel, iterations=1) * 255
+                # pil_seg_mask = Image.fromarray(seg_map)
+                # img = Image.composite(pil_mask, pil_img, mask=pil_seg_mask)
                 cols[3].image(img, clamp=True)
 
                 # Display JSON
