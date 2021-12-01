@@ -321,6 +321,7 @@ def extract_colors(img, x_min, x_max, y_min, y_max, n_colors=6):
 def synthesize_page_on_image(
     page: Dict[str, Any],
     image: np.ndarray,
+    c_margin: float = 0.25,
     draw_proba: bool = False,
     font_size: int = 13,
     font_family: Optional[str] = None,
@@ -355,10 +356,15 @@ def synthesize_page_on_image(
                 xmin, xmax = int(round(w * xmin)), int(round(w * xmax))
                 ymin, ymax = int(round(h * ymin)), int(round(h * ymax))
 
+                box_w = xmax - xmin
+                box_h = ymax - ymin
                 # White drawing context adapted to font size, 0.75 factor to convert pts --> pix
-                font = get_font(font_family, int(0.95 * (ymax - ymin)))  # FIXED FROM 0.75
+                font = get_font(font_family, int(0.75 * box_h))  # FIXED FROM 0.75
+                
+                ymin_c, ymax_c = ymin - c_margin * box_h, ymax + c_margin * box_h
+                xmin_c, xmax_c = xmin - c_margin * box_h, xmax + c_margin * box_h
 
-                bg_color, text_color = extract_colors(image, ymin, ymax, xmin, xmax)
+                bg_color, text_color = extract_colors(image, ymin_c, ymax_c, xmin_c, xmax_c)
 
                 img = Image.new('RGB', (xmax - xmin, ymax - ymin), color=bg_color)  # (255, 255, 255))
                 d = ImageDraw.Draw(img)
